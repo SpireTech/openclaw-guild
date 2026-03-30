@@ -1,6 +1,6 @@
 {
   "name": "openclaw-guild",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenClaw Guild plugin — Supabase-backed memory, skills, and per-agent auth for multi-user agent teams",
   "type": "module",
   "main": "dist/index.js",
@@ -23,10 +23,28 @@
     },
     "access": {
       "gatewayEnv": true,
-      "filesystem": ["session JSONL transcripts (read-only, before_compaction hook)"],
-      "network": ["Supabase REST API (PostgREST + Auth)"],
-      "hooks": ["before_prompt_build", "before_compaction", "agent_end"],
-      "tools": ["guild_memory_read", "guild_memory_save", "guild_memory_archive", "guild_memory_search", "guild_memory_team", "guild_memory_company", "guild_skill_read", "guild_user_read", "guild_user_save"]
+      "filesystem": [
+        "session JSONL transcripts (read-only, before_compaction hook)"
+      ],
+      "network": [
+        "Supabase REST API (PostgREST + Auth)"
+      ],
+      "hooks": [
+        "before_prompt_build",
+        "before_compaction",
+        "agent_end"
+      ],
+      "tools": [
+        "guild_memory_read",
+        "guild_memory_save",
+        "guild_memory_archive",
+        "guild_memory_search",
+        "guild_memory_team",
+        "guild_memory_company",
+        "guild_skill_read",
+        "guild_user_read",
+        "guild_user_save"
+      ]
     },
     "privacy": {
       "readsUserMessages": true,
