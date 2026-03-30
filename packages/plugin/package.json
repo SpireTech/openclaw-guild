@@ -1,0 +1,51 @@
+{
+  "name": "openclaw-guild",
+  "version": "0.1.0",
+  "description": "OpenClaw Guild plugin — Supabase-backed memory, skills, and per-agent auth for multi-user agent teams",
+  "type": "module",
+  "main": "dist/index.js",
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ]
+  },
+  "files": [
+    "dist/**/*.js",
+    "openclaw.plugin.json",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npx tsc",
+    "check": "npx tsc --noEmit",
+    "prepublishOnly": "npx tsc"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.0"
+  },
+  "devDependencies": {
+    "openclaw": "2026.3.24",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.24"
+  },
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "memory",
+    "skills",
+    "supabase",
+    "multi-user",
+    "rbac",
+    "agent"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpireTech/openclaw-guild.git",
+    "directory": "packages/plugin"
+  },
+  "homepage": "https://github.com/SpireTech/openclaw-guild#readme",
+  "license": "AGPL-3.0-or-later"
+}

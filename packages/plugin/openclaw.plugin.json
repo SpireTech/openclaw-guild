@@ -1,0 +1,87 @@
+{
+  "id": "guild",
+  "kind": "memory",
+  "name": "Guild",
+  "description": "Supabase-backed organizational memory, skills, and per-agent auth for OpenClaw agents",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "supabaseUrl": {
+        "type": "string",
+        "description": "Supabase REST API URL"
+      },
+      "supabaseAnonKey": {
+        "type": "string",
+        "description": "Supabase anonymous key"
+      },
+      "supabaseServiceKey": {
+        "type": "string",
+        "description": "Supabase service role key (for admin operations like agent provisioning)"
+      },
+      "agents": {
+        "type": "object",
+        "description": "Agent credentials keyed by OpenClaw agent ID",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "uuid": {
+              "type": "string",
+              "description": "Platform agent UUID"
+            },
+            "email": {
+              "type": "string",
+              "description": "Session auth email"
+            },
+            "password": {
+              "type": "string",
+              "description": "Session auth password"
+            },
+            "jwt": {
+              "type": "string",
+              "description": "Static JWT (alternative to email/password)"
+            }
+          },
+          "required": ["uuid"]
+        }
+      },
+      "features": {
+        "type": "object",
+        "description": "Enable or disable tool groups",
+        "properties": {
+          "memory": {
+            "type": "boolean",
+            "default": true,
+            "description": "Agent/role/company memory tools"
+          },
+          "skills": {
+            "type": "boolean",
+            "default": true,
+            "description": "Skill catalog injection and on-demand loading"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "required": ["supabaseUrl", "supabaseAnonKey", "agents"],
+    "additionalProperties": false
+  },
+  "uiHints": {
+    "supabaseUrl": {
+      "label": "Supabase URL",
+      "placeholder": "http://localhost:54321",
+      "help": "Use host.docker.internal if the gateway runs in a container"
+    },
+    "supabaseAnonKey": {
+      "label": "Supabase Anon Key",
+      "sensitive": true
+    },
+    "features.memory": {
+      "label": "Enable Memory Tools",
+      "help": "Agent, role, and company memory tools"
+    },
+    "features.skills": {
+      "label": "Enable Skills",
+      "help": "Skill catalog injection and on-demand skill loading"
+    }
+  }
+}

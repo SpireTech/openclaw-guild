@@ -1,0 +1,46 @@
+{
+  "name": "openclaw-guild-mcp",
+  "version": "0.6.0",
+  "description": "MCP server for OpenClaw Guild — memory, skills, and knowledge tools for Claude Desktop and other MCP clients",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "guild-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*.js",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npx tsc"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  },
+  "keywords": [
+    "openclaw",
+    "mcp",
+    "memory",
+    "skills",
+    "knowledge",
+    "supabase",
+    "claude-desktop"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpireTech/openclaw-guild.git",
+    "directory": "packages/mcp/guild-mcp"
+  },
+  "homepage": "https://github.com/SpireTech/openclaw-guild#readme",
+  "license": "AGPL-3.0-or-later"
+}

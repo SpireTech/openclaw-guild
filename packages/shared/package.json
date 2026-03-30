@@ -1,0 +1,22 @@
+{
+  "name": "openclaw-guild-shared",
+  "version": "0.5.0",
+  "type": "module",
+  "exports": {
+    "./supabase": "./dist/supabase.js",
+    "./types": "./dist/types.js",
+    "./embeddings": "./dist/embeddings.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  },
+  "license": "AGPL-3.0-or-later"
+}

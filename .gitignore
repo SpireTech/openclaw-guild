@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.local
+*.tsbuildinfo
+.DS_Store
+
+# Build output — commit .js files, skip declarations and source maps
+*.d.ts
+*.d.ts.map
+*.js.map

@@ -1,0 +1,15 @@
+{
+  "name": "openclaw-guild",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenClaw Guild: multi-user business platform plugin — shared memory, skills, and role-based access for agent teams",
+  "type": "module",
+  "workspaces": [
+    "packages/plugin",
+    "packages/mcp/*",
+    "packages/shared"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present"
+  }
+}
