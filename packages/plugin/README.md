@@ -1,6 +1,23 @@
 # openclaw-guild
 
-Multi-user business platform plugin for [OpenClaw](https://openclaw.ai). Adds Supabase-backed memory, skills, and role-based access control for agent teams.
+Multi-user business platform plugin for [OpenClaw](https://openclaw.ai).
+
+## The problem
+
+OpenClaw is great for a single user, but if you run a business and want your team to use AI agents, you're stuck. Everyone shares the same memory, the same context, the same access. You can't give an employee access to a marketing agent without exposing your private projects, financials, or other work.
+
+## What Guild does
+
+Guild turns single-user OpenClaw into a multi-user business platform. Each person gets their own agents with isolated memory, shared team knowledge flows through role-based access control, and an admin dashboard lets you manage it all — who can see what, what agents remember, and what they're allowed to do.
+
+- **Tiered memory** — agent-private, per-user, role-shared, and company-wide knowledge, all in Supabase with row-level security
+- **Skills** — versioned instruction sets assigned by scope (company, role, individual) with a visual assignment matrix
+- **Data isolation** — agents only see their own data, enforced at the database level. No agent can read another agent's memories.
+- **Auto-recall** — injects relevant user, company, and role context into every agent session automatically
+- **Auto-capture** — detects and saves user facts from conversations (with per-user opt-out)
+- **Memory persistence** — saves important context before compaction so it survives context window compression
+- **Admin UI** — [web dashboard](https://github.com/SpireTech/openclaw-guild-admin) for managing agents, users, roles, memory, skills, network policies, and audit logs
+- **Agentic Management** — use Claude Code or your favorite command-line AI tool to administer users and configuration
 
 ## Install
 
@@ -10,41 +27,42 @@ openclaw guild setup
 openclaw guild provision-agent --all
 ```
 
-## What it does
-
-- Replaces file-based memory with Supabase-backed tiered memory (agent, user, role, company)
-- Injects skill catalog and memory context into every agent session
-- Auto-captures user facts from conversations (with per-user opt-out)
-- Saves working context before compaction so it survives context compression
-- Per-agent data isolation via Supabase Row-Level Security
+Or via npm:
+```bash
+npm install openclaw-guild
+```
 
 ## What it accesses
 
 This plugin runs inside the OpenClaw gateway process and accesses:
 
-| Resource | Purpose | Details |
-|---|---|---|
-| **Supabase API** | All memory and skill operations | Configured via `supabaseUrl` + `supabaseAnonKey` in plugin config |
-| **Gateway env vars** | Credential resolution | `$ENV_VAR` references in agent email/password/jwt config fields |
-| **Session transcripts** | Pre-compaction context extraction | Reads JSONL session files (read-only) via `before_compaction` hook |
-| **User messages** | Auto-capture of user facts | `agent_end` hook scans messages for role, team, preferences. Per-user opt-out available. |
+| Resource | Purpose |
+|---|---|
+| **Supabase API** | All memory and skill operations (configured via plugin config) |
+| **Gateway env vars** | Credential resolution (`$ENV_VAR` references in agent config) |
+| **Session transcripts** | Pre-compaction context extraction (read-only) |
+| **User messages** | Auto-capture of user facts (opt-out available per user) |
 
-The plugin does **not** make network requests to any service other than your configured Supabase instance. Agent credentials are stored in plugin config (not in sandbox containers) and support `$ENV_VAR` references to keep secrets out of JSON.
+The plugin does **not** contact any service other than your configured Supabase instance.
+
+## Documentation
+
+- **[Full documentation & source](https://github.com/SpireTech/openclaw-guild)** — architecture, config reference, migration guide, contributing
+- **[Admin UI](https://github.com/SpireTech/openclaw-guild-admin)** — web dashboard ([Docker image](https://ghcr.io/spiretech/openclaw-guild-admin))
+- **[Installation Runbook](https://github.com/SpireTech/openclaw-guild/blob/main/packages/plugin/INSTALL.md)** — manual setup steps
+- **[Migration Guide](https://github.com/SpireTech/openclaw-guild/blob/main/docs/MIGRATION-GUIDE.md)** — importing existing file-based memory
 
 ## Requirements
 
 - OpenClaw >= 2026.3.24
 - Supabase (local or hosted)
 
-## Documentation
+## Built by
 
-- [Full README](https://github.com/SpireTech/openclaw-guild)
-- [Installation Runbook](https://github.com/SpireTech/openclaw-guild/blob/main/packages/plugin/INSTALL.md)
-- [Migration Guide](https://github.com/SpireTech/openclaw-guild/blob/main/docs/MIGRATION-GUIDE.md)
-- [Admin UI](https://github.com/SpireTech/openclaw-guild-admin)
+[SpireTech](https://www.spiretech.com) — a 30+ year Managed IT Service Provider (MSP) in Portland, OR, USA. We provide IT and AI consulting, security, and support services to small and medium businesses locally and internationally.
+
+If you are an MSP with clients concerned about privacy or token costs, this is for you — enable a local AI server for your clients in their office.
 
 ## License
 
 AGPL-3.0-or-later
-
-Built by [SpireTech](https://www.spiretech.com)
