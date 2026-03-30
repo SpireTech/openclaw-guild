@@ -7,14 +7,41 @@
   "openclaw": {
     "extensions": [
       "./dist/index.js"
-    ]
+    ],
+    "compat": {
+      "pluginApi": "1"
+    },
+    "build": {
+      "openclawVersion": "2026.3.24"
+    },
+    "requiredConfig": {
+      "supabaseUrl": "Supabase REST API URL (e.g. http://localhost:54321 or hosted)",
+      "supabaseAnonKey": "Supabase anonymous/public key for RLS-enforced queries"
+    },
+    "optionalConfig": {
+      "supabaseServiceKey": "Service role key for CLI admin operations (agent provisioning). Not required at runtime."
+    },
+    "access": {
+      "gatewayEnv": true,
+      "filesystem": ["session JSONL transcripts (read-only, before_compaction hook)"],
+      "network": ["Supabase REST API (PostgREST + Auth)"],
+      "hooks": ["before_prompt_build", "before_compaction", "agent_end"],
+      "tools": ["guild_memory_read", "guild_memory_save", "guild_memory_archive", "guild_memory_search", "guild_memory_team", "guild_memory_company", "guild_skill_read", "guild_user_read", "guild_user_save"]
+    },
+    "privacy": {
+      "readsUserMessages": true,
+      "writesToExternalService": "Supabase (user-configured, self-hosted or cloud)",
+      "autoCapture": "Extracts user facts from conversations (opt-out via auto_capture_enabled per user)",
+      "credentialStorage": "Agent email/password in plugin config, supports $ENV_VAR references"
+    }
   },
   "files": [
     "dist/**/*.js",
     "openclaw.plugin.json",
     "package.json",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "INSTALL.md"
   ],
   "scripts": {
     "build": "npx tsc",
