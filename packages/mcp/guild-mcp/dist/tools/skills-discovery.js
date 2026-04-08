@@ -2,7 +2,7 @@ import { z } from "zod";
 import { mcpJson } from "../lib/types.js";
 const ListSkillsInput = z.object({
     company_id: z.string().uuid().optional(),
-    scope: z.enum(["company", "role", "individual"]).optional(),
+    scope: z.enum(["company", "role", "agent"]).optional(),
     status: z.enum(["draft", "published", "deprecated"]).optional(),
     tags: z.array(z.string()).optional(),
     search: z.string().optional(),
@@ -25,7 +25,7 @@ export const listSkillsTool = {
         type: "object",
         properties: {
             company_id: { type: "string", description: "Filter by company UUID" },
-            scope: { type: "string", enum: ["company", "role", "individual"] },
+            scope: { type: "string", enum: ["company", "role", "agent"] },
             status: { type: "string", enum: ["draft", "published", "deprecated"] },
             tags: { type: "array", items: { type: "string" } },
             search: {
@@ -46,7 +46,7 @@ export const getSkillTool = {
             scope: { type: "string", description: "Required with slug" },
             scope_value: {
                 type: "string",
-                description: "Required with slug for role/individual",
+                description: "Required with slug for role/agent scoped skills",
             },
             version: {
                 type: "number",

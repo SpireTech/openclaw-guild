@@ -155,7 +155,7 @@ export interface Skill {
   id: string;
   name: string;
   slug: string;
-  scope: "company" | "role" | "individual";
+  scope: "company" | "role" | "agent";
   scope_value: string | null;
   description: string | null;
   current_version: number;
@@ -191,7 +191,7 @@ export interface SkillAssignment {
 export interface ResolvedSkill {
   skill: Skill;
   content?: string;
-  source: "company" | "role" | "individual" | "assignment";
+  source: "company" | "role" | "agent" | "assignment";
   is_enabled: boolean;
 }
 

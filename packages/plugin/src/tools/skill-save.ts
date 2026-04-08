@@ -16,9 +16,9 @@ export const skillSaveDef = {
     scope: Type.Optional(Type.Union([
       Type.Literal("company"),
       Type.Literal("role"),
-      Type.Literal("individual"),
+      Type.Literal("agent"),
     ], { description: "Skill scope (required for new skills)" })),
-    scope_value: Type.Optional(Type.String({ description: "Role name or user ID (required when scope is role or individual)" })),
+    scope_value: Type.Optional(Type.String({ description: "Role name or agent owner ID (required when scope is role or agent)" })),
     description: Type.Optional(Type.String({ description: "One-line description of what this skill teaches" })),
     tags: Type.Optional(Type.Array(Type.String(), { description: "Tags for categorization" })),
     content: Type.String({ description: "The skill content (markdown)" }),

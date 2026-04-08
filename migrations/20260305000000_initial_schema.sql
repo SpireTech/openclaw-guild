@@ -6,7 +6,7 @@
 -- Three-service architecture:
 --   Service 1: Knowledge Store (vector search, ingestion)
 --   Service 2: Memory (4-tier agent→user→role→company)
---   Service 3: Skills (company→role→individual skill registry)
+--   Service 3: Skills (company→role→agent skill registry)
 --
 -- Changes from v0.4:
 -- * Generalized vendor-specific columns (halo_client_id → external_id, entra_oid → external_id)
@@ -42,7 +42,7 @@ CREATE TYPE chunk_status     AS ENUM ('active', 'superseded', 'invalidated');
 CREATE TYPE client_status    AS ENUM ('active', 'inactive', 'prospect');
 
 -- Skills enums (new in v0.4)
-CREATE TYPE skill_scope      AS ENUM ('company', 'role', 'individual');
+CREATE TYPE skill_scope      AS ENUM ('company', 'role', 'agent');
 CREATE TYPE skill_status     AS ENUM ('draft', 'published', 'deprecated', 'archived');
 
 
@@ -360,7 +360,7 @@ CREATE TRIGGER trg_company_mem_updated BEFORE UPDATE ON company_memories
 -- Skills are versioned instruction sets scoped to three levels:
 --   company  → all agents in the org
 --   role     → agents assigned to a specific role
---   individual → a specific user's agents
+--   agent    → a specific user's agents
 --
 -- Skills differ from memories:
 --   Memory = descriptive ("Client X resets firewalls on update")
@@ -374,8 +374,8 @@ CREATE TABLE skills (
     id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name            text NOT NULL,
     slug            text NOT NULL,                          -- URL-safe identifier (e.g. "p1-escalation-procedure")
-    scope           skill_scope NOT NULL,                   -- company, role, individual
-    scope_value     text,                                   -- role name (when scope=role), user_id (when scope=individual), null (when scope=company)
+    scope           skill_scope NOT NULL,                   -- company, role, agent
+    scope_value     text,                                   -- role name (when scope=role), owner_id (when scope=agent), null (when scope=company)
     description     text,                                   -- one-liner: what this skill teaches
     current_version integer NOT NULL DEFAULT 0,             -- 0 = no published version yet
     status          skill_status NOT NULL DEFAULT 'draft',
@@ -413,7 +413,7 @@ CREATE INDEX idx_skill_ver_skill ON skill_versions(skill_id);
 -- A company skill is available to all agents by default (no assignment needed).
 -- A role skill is available to all agents in that role by default.
 -- This table handles: overrides (disable a company skill for one agent),
--- grants (give an individual skill to a specific agent), and
+-- grants (give an agent-scoped skill to a specific agent), and
 -- cross-scope sharing (share a role skill with an agent not in that role).
 CREATE TABLE skill_assignments (
     id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -812,8 +812,8 @@ CREATE POLICY skills_read ON skills
                 OR ((SELECT get_actor_type()) = 'agent' AND scope_value = ANY(get_agent_roles()))
                 OR ((SELECT get_actor_type()) = 'user' AND ((SELECT has_role('owner')) OR (SELECT has_role('manager'))))
             ))
-            -- Individual skills: the owning user or their agents
-            OR (scope = 'individual' AND (
+            -- Agent skills: the owning user or their agents
+            OR (scope = 'agent' AND (
                 ((SELECT get_actor_type()) = 'user' AND scope_value = auth.uid()::text)
                 OR ((SELECT get_actor_type()) = 'agent' AND EXISTS (
                     SELECT 1 FROM agents WHERE agents.id = auth.uid() AND agents.owner_id::text = skills.scope_value
@@ -828,21 +828,21 @@ CREATE POLICY skills_read_all ON skills
         (SELECT get_actor_type()) = 'user' AND ((SELECT has_role('owner')) OR (SELECT has_role('manager')))
     );
 
--- Managers+ can create company and role skills; users create their own individual skills
+-- Managers+ can create company and role skills; users create their own agent skills
 CREATE POLICY skills_insert ON skills
     FOR INSERT TO authenticated WITH CHECK (
         (SELECT get_actor_type()) = 'user' AND (
             (scope IN ('company', 'role') AND ((SELECT has_role('owner')) OR (SELECT has_role('manager'))))
-            OR (scope = 'individual' AND scope_value = auth.uid()::text)
+            OR (scope = 'agent' AND scope_value = auth.uid()::text)
         )
     );
 
--- Managers+ can update company/role skills; users update their own individual skills
+-- Managers+ can update company/role skills; users update their own agent skills
 CREATE POLICY skills_update ON skills
     FOR UPDATE TO authenticated USING (
         (SELECT get_actor_type()) = 'user' AND (
             (scope IN ('company', 'role') AND ((SELECT has_role('owner')) OR (SELECT has_role('manager'))))
-            OR (scope = 'individual' AND scope_value = auth.uid()::text)
+            OR (scope = 'agent' AND scope_value = auth.uid()::text)
         )
     );
 
@@ -865,12 +865,12 @@ CREATE POLICY skill_ver_insert ON skill_versions
             SELECT 1 FROM skills s WHERE s.id = skill_versions.skill_id
             AND (
                 (s.scope IN ('company', 'role') AND ((SELECT has_role('owner')) OR (SELECT has_role('manager'))))
-                OR (s.scope = 'individual' AND s.scope_value = auth.uid()::text)
+                OR (s.scope = 'agent' AND s.scope_value = auth.uid()::text)
             )
         )
     );
 
--- Skill assignments: managers+ manage, or own individual
+-- Skill assignments: managers+ manage, or own agent-scoped
 CREATE POLICY skill_assign_read ON skill_assignments
     FOR SELECT TO authenticated USING (
         assignee_id = auth.uid()

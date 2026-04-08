@@ -38,11 +38,11 @@ export async function resolveAgentSkills(db, agentId, includeContent = false) {
             .eq("status", "published")
             .in("scope_value", agentRoles)
         : { data: [] };
-    const { data: individualSkills } = agent.owner_id
+    const { data: agentSkills } = agent.owner_id
         ? await db
             .from("skills")
             .select(`*, skill_versions!inner(${versionSelect})`)
-            .eq("scope", "individual")
+            .eq("scope", "agent")
             .eq("status", "published")
             .eq("scope_value", agent.owner_id)
         : { data: [] };
@@ -77,14 +77,14 @@ export async function resolveAgentSkills(db, agentId, includeContent = false) {
             });
         }
     }
-    // Individual-level skills
-    for (const s of (individualSkills ?? [])) {
+    // Agent-level skills
+    for (const s of (agentSkills ?? [])) {
         const id = s.id;
         if (!skillMap.has(id) && !disabledSet.has(id)) {
             skillMap.set(id, {
                 skill: s,
                 content: extractContent(s),
-                source: "individual",
+                source: "agent",
                 is_enabled: true,
             });
         }

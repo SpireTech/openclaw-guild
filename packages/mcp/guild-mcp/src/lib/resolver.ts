@@ -51,11 +51,11 @@ export async function resolveAgentSkills(
         .in("scope_value", agentRoles)
     : { data: [] as typeof companySkills };
 
-  const { data: individualSkills } = agent.owner_id
+  const { data: agentSkills } = agent.owner_id
     ? await db
         .from("skills")
         .select(`*, skill_versions!inner(${versionSelect})`)
-        .eq("scope", "individual")
+        .eq("scope", "agent")
         .eq("status", "published")
         .eq("scope_value", agent.owner_id)
     : { data: [] as typeof companySkills };
@@ -93,14 +93,14 @@ export async function resolveAgentSkills(
     }
   }
 
-  // Individual-level skills
-  for (const s of (individualSkills ?? []) as Array<Record<string, unknown>>) {
+  // Agent-level skills
+  for (const s of (agentSkills ?? []) as Array<Record<string, unknown>>) {
     const id = s.id as string;
     if (!skillMap.has(id) && !disabledSet.has(id)) {
       skillMap.set(id, {
         skill: s as unknown as ResolvedSkill["skill"],
         content: extractContent(s),
-        source: "individual",
+        source: "agent",
         is_enabled: true,
       });
     }

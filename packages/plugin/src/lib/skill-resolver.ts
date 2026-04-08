@@ -1,7 +1,7 @@
 /**
  * Resolve the skill catalog for an agent.
  *
- * Resolution: company skills + role skills + individual skills,
+ * Resolution: company skills + role skills + agent skills,
  * minus explicitly disabled assignments.
  * Returns name + description only (no content) for the catalog.
  */

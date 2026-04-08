@@ -3,7 +3,7 @@ import { mcpJson } from "../lib/types.js";
 const CreateSkillInput = z.object({
     name: z.string(),
     slug: z.string(),
-    scope: z.enum(["company", "role", "individual"]),
+    scope: z.enum(["company", "role", "agent"]),
     scope_value: z.string().optional(),
     description: z.string().optional(),
     tags: z.array(z.string()).optional(),
@@ -24,7 +24,7 @@ export const createSkillTool = {
         properties: {
             name: { type: "string" },
             slug: { type: "string", description: "URL-safe, unique within scope" },
-            scope: { type: "string", enum: ["company", "role", "individual"] },
+            scope: { type: "string", enum: ["company", "role", "agent"] },
             scope_value: { type: "string", description: "Role name or user ID" },
             description: { type: "string" },
             tags: { type: "array", items: { type: "string" } },

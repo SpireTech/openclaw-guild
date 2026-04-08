@@ -11,7 +11,7 @@ OpenClaw is great for a single user, but if you run a business and want your tea
 Guild turns single-user OpenClaw into a multi-user business platform. Each person gets their own agents with isolated memory, shared team knowledge flows through role-based access control, and an admin dashboard lets you manage it all — who can see what, what agents remember, and what they're allowed to do.
 
 - **Tiered memory** — agent-private, per-user, role-shared, and company-wide knowledge, all in Supabase with row-level security
-- **Skills** — versioned instruction sets assigned by scope (company, role, individual) with a visual assignment matrix
+- **Skills** — versioned instruction sets assigned by scope (company, role, agent) with a visual assignment matrix
 - **Data isolation** — agents only see their own data, enforced at the database level. No agent can read another agent's memories.
 - **Auto-recall** — injects relevant user, company, and role context into every agent session automatically
 - **Auto-capture** — detects and saves user facts from conversations (with per-user opt-out)
