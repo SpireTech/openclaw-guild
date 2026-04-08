@@ -42,6 +42,8 @@
         "guild_memory_team",
         "guild_memory_company",
         "guild_skill_read",
+        "guild_skill_list",
+        "guild_skill_save",
         "guild_user_read",
         "guild_user_save"
       ]

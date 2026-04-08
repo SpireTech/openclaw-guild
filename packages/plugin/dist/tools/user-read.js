@@ -1,4 +1,3 @@
-// @ts-nocheck — legacy untyped file, works at runtime
 import { Type } from "@sinclair/typebox";
 import { supabaseGet } from "../supabase.js";
 export const userReadDef = {
@@ -33,5 +32,4 @@ export async function executeUserRead(creds, config, params, userId) {
         details: undefined,
     };
 }
-//# sourceMappingURL=user-read.js.map
 //# sourceMappingURL=user-read.js.map

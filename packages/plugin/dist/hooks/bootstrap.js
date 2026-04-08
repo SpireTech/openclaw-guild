@@ -119,10 +119,40 @@ guild_memory_company(namespace="playbook")
 
 ## Skill Tools
 
+### guild_skill_list
+List all skills available to you (refreshed from database).
+\`\`\`
+guild_skill_list()
+\`\`\`
+
 ### guild_skill_read
 Load the full content of an guild skill by slug (see the guild_skills catalog in your context).
 \`\`\`
 guild_skill_read(slug="youtube-transcript")
+\`\`\`
+
+### guild_skill_save
+Create a new skill or add a new version to an existing skill.
+\`\`\`
+guild_skill_save(name="P1 Escalation", slug="p1-escalation", scope="company", content="...")
+guild_skill_save(skill_id="<uuid>", content="Updated content", change_note="Added step 3")
+\`\`\`
+
+## User Memory Tools
+
+### guild_user_read
+Read memories about the person you are currently talking to.
+\`\`\`
+guild_user_read()
+guild_user_read(namespace="preferences")
+guild_user_read(namespace="preferences", key="timezone")
+\`\`\`
+
+### guild_user_save
+Save a memory about the current user (preferences, context, notes).
+\`\`\`
+guild_user_save(namespace="preferences", key="timezone", value="America/New_York")
+guild_user_save(namespace="profile", key="role", value="Senior Engineer", tags=["auto-captured"])
 \`\`\`
 `;
 async function buildMemoryDoc(creds, config) {

@@ -1,5 +1,5 @@
-// @ts-nocheck — legacy untyped file, works at runtime
 import { Type } from "@sinclair/typebox";
+import { getAgentToken } from "../auth.js";
 export const userSaveDef = {
     name: "guild_user_save",
     description: "Save a memory about the person you are currently talking to. Use for their preferences, name, role, timezone, communication style, etc. Automatically identifies the user.",
@@ -17,7 +17,6 @@ export async function executeUserSave(creds, config, params, userId, agentUuid) 
             details: undefined,
         };
     }
-    const { getAgentToken } = await import("../auth.js");
     const token = await getAgentToken(creds, config);
     const url = config.supabaseUrl;
     const res = await fetch(`${url}/rest/v1/user_memories`, {
@@ -50,5 +49,4 @@ export async function executeUserSave(creds, config, params, userId, agentUuid) 
         details: undefined,
     };
 }
-//# sourceMappingURL=user-save.js.map
 //# sourceMappingURL=user-save.js.map

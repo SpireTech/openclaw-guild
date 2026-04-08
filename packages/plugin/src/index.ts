@@ -5,7 +5,8 @@
  *
  * Registers:
  * - 6 memory tools (read, save, archive, search, team, company)
- * - 1 skill tool (read skill content on demand)
+ * - 2 user memory tools (read, save — per-user memories)
+ * - 3 skill tools (list, read, save)
  * - 1 bootstrap hook (skill catalog + memory hints injection)
  *
  * All features are configurable via plugin config.
@@ -21,6 +22,11 @@ import { memorySearchDef, executeMemorySearch } from "./tools/memory-search.js";
 import { memoryTeamDef, executeMemoryTeam } from "./tools/memory-team.js";
 import { memoryCompanyDef, executeMemoryCompany } from "./tools/memory-company.js";
 import { skillReadDef, executeSkillRead } from "./tools/skill-read.js";
+import { skillListDef, executeSkillList } from "./tools/skill-list.js";
+import { skillSaveDef, executeSkillSave } from "./tools/skill-save.js";
+import { userReadDef, executeUserRead } from "./tools/user-read.js";
+import { userSaveDef, executeUserSave } from "./tools/user-save.js";
+import { resolveUser } from "./lib/user-resolver.js";
 import { createBootstrapHook } from "./hooks/bootstrap.js";
 import { createCompactionFlushHook } from "./hooks/compaction-flush.js";
 import { createAutoCaptureHook } from "./hooks/auto-capture.js";
@@ -124,9 +130,37 @@ export default definePluginEntry({
         }),
         { names: ["guild_memory_company"] },
       );
+
+      // --- User Memory Tools ---
+
+      api.registerTool(
+        (ctx) => ({
+          ...userReadDef,
+          label: "Read user memories",
+          async execute(_id: string, params: any) {
+            const creds = resolveCreds(ctx);
+            const user = await resolveUser(ctx, creds, cfg);
+            return executeUserRead(creds, cfg, params, user?.userId);
+          },
+        }),
+        { names: ["guild_user_read"] },
+      );
+
+      api.registerTool(
+        (ctx) => ({
+          ...userSaveDef,
+          label: "Save user memory",
+          async execute(_id: string, params: any) {
+            const creds = resolveCreds(ctx);
+            const user = await resolveUser(ctx, creds, cfg);
+            return executeUserSave(creds, cfg, params, user?.userId, creds.platformUuid);
+          },
+        }),
+        { names: ["guild_user_save"] },
+      );
     }
 
-    // --- Skill Tool (if enabled) ---
+    // --- Skill Tools (if enabled) ---
 
     if (cfg.features.skills) {
       api.registerTool(
@@ -138,6 +172,28 @@ export default definePluginEntry({
           },
         }),
         { names: ["guild_skill_read"] },
+      );
+
+      api.registerTool(
+        (ctx) => ({
+          ...skillListDef,
+          label: "List guild skills",
+          async execute(_id: string, _params: any) {
+            return executeSkillList(resolveCreds(ctx), cfg);
+          },
+        }),
+        { names: ["guild_skill_list"] },
+      );
+
+      api.registerTool(
+        (ctx) => ({
+          ...skillSaveDef,
+          label: "Save guild skill",
+          async execute(_id: string, params: any) {
+            return executeSkillSave(resolveCreds(ctx), cfg, params);
+          },
+        }),
+        { names: ["guild_skill_save"] },
       );
     }
 
